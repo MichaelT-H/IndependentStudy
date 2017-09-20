@@ -6,13 +6,55 @@ var serv = require('http').Server(app);
 var bcrypt = require('bcrypt');
 var io = require('socket.io')(serv);
 var bodyParser = require('body-parser');
+var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
+var Cookies = require("cookies");
+var cookieParser = require('cookie-parser');
+var session = require("express-session");
+
+
+
+
+app.use(session({secret: 'testing',
+                saveUIninitialized: true,
+                resave: true  }));
+
+app.use(cookieParser());
 app.use(bodyParser());
+
+
+
+
+app.use('/', function(req, res){
+            res.sendFile(__dirname + '/client/index.html');
+            console.log(req.cookies);
+            console.log("_______");
+            console.log(req.session);
+
+});
+
+
+
+
+app.listen(80);
+console.log("Server is running on port 80");
+
+
+
+
+
+
+
+
+
+
+/*
 var con = mysql.createConnection({
   host: "localhost",
   user: "server",
   password: "michael",
   database: "michaelstudy"
 });
+
 con.connect();
 con.query('SELECT * from account', function (error, results, fields) {
   if (error) throw error;
@@ -22,10 +64,14 @@ con.query('SELECT * from account', function (error, results, fields) {
 });
 app.use(express.static(path.join(__dirname, 'client')));
 app.get('/', function(req, res){
+  console.log("Cookies: ", req.cookies)
   res.sendFile(__dirname + '/client/index.html');
 })
 serv.listen(80);
 app.post('/', function(req, res) {
+  console.log(req.cookies);
+  console.log("______________________");
+  console.log(req.session);
 //  console.log(req.body.username);
 if(req.body.pass1 == req.body.pass2) {
   con.query('SELECT username from account where username like "'+ req.body.username+'"', function (error, results, fields){
@@ -64,7 +110,9 @@ app.post('/testing',function(req, res){
 
         if (matches) {
           //SIGN IN
-          res.json({ success: true, message: 'Logged in homie'});
+          var token = jwt.sign(req.body.username, "testingtoken");
+
+          res.json({ success: true, message: 'Logged in homie', token: token});
         } else {
           res.json({ success: false, message: 'invalid username or password'});
         }
@@ -76,12 +124,14 @@ app.post('/testing',function(req, res){
 
 
 io.on('connection',function(socket){
-		console.log('socket Connection');
-    console.log(socket.id);
+	//	console.log('socket Connection');
+  //  console.log(socket.id);
     socket.on('disconnect',function(socket){
-    		console.log('socket disconnected');
+  //  		console.log('socket disconnected');
 
 
     });
 
 });
+
+*/
