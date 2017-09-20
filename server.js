@@ -31,11 +31,26 @@ app.use('/', function(req, res){
             console.log(req.session);
 
 });
+app.get('/login', function(req, res){
+
+  res.sendFile(__dirname + '/client/login.html');
+})
+io.on('connection',function(socket){
+		console.log('socket Connection');
+    console.log(socket.id);
+    socket.on('disconnect',function(socket){
+    		console.log('socket disconnected');
+
+    });
+    socket.on('test',function(data){
+      console.log(data);
+
+    });
+  });
 
 
 
-
-app.listen(80);
+serv.listen(80);
 console.log("Server is running on port 80");
 
 
@@ -123,14 +138,7 @@ app.post('/testing',function(req, res){
 });
 
 
-io.on('connection',function(socket){
-	//	console.log('socket Connection');
-  //  console.log(socket.id);
-    socket.on('disconnect',function(socket){
-  //  		console.log('socket disconnected');
 
-
-    });
 
 });
 
